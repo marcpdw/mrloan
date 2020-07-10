@@ -3,12 +3,13 @@ import logo from './logo.svg'
 import './App.css'
 
 import { TESTING_CHANNEL_ID } from './constants/slack'
+import { START_OF_WORKDAY } from './constants/cron';
 import { getQuoteOfTheDay } from './actions/quotes'
 import { getRandomMorningGreeting } from './constants/greetings'
 import { send } from './api/message'
 import Scheduler from './config/cron';
 
-const cron = new Scheduler('59 23 * * 5' /* '09 9 * * 1-5' */, async function() {
+const cron = new Scheduler(START_OF_WORKDAY, async function() {
   const dayQuote = await getQuoteOfTheDay()
   const greetings = getRandomMorningGreeting()
 
