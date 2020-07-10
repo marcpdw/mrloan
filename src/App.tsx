@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import logo from './logo.svg'
-import './App.css'
+import './App.scss'
 
 import { TESTING_CHANNEL_ID } from './constants/slack'
 import { START_OF_WORKDAY } from './constants/cron';
