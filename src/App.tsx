@@ -1,12 +1,17 @@
-import React, { useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
+import { Box } from '@material-ui/core';
+
 import logo from './logo.svg'
 import './App.scss'
 
 import { TESTING_CHANNEL_ID } from './constants/slack'
 import { START_OF_WORKDAY } from './constants/cron';
+import { SlackChannel, SlackMessage } from './models/slack';
+import { getChannels } from './api/slack/channel';
 import { getQuoteOfTheDay } from './actions/quotes'
 import { getRandomMorningGreeting } from './constants/greetings'
-import { send } from './api/message'
+import { send } from './api/slack/message'
+import MessageComposer from './components/MessageComposer';
 import Scheduler from './config/cron';
 
 const cron = new Scheduler(START_OF_WORKDAY, async function() {
@@ -17,40 +22,39 @@ const cron = new Scheduler(START_OF_WORKDAY, async function() {
 })
 
 function App() {
-  const [msg, setMsg] = useState('')
+  const [channels, setChannels] = useState<SlackChannel[]>([])
+
+  useEffect(() => {
+    getChannels().then(channelList => {
+      setChannels(channelList)
+    })
+  }, [])
+
+  const onMessageComposed = (message: SlackMessage) => {
+    send(message.text, message.channel)
+  }
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+    <Fragment>
+      <header>
+        {/* <img src={logo} className="App-logo" alt="logo" /> */}
       </header>
       <main>
-        <h1>Mr Loan's messages</h1>
-        <form>
-          <input type="text" name="message" onChange={ev => {
-            setMsg(ev.target.value)
-          }} />
-          <input type="button" value="Send" onClick={() => {
-            send(msg, TESTING_CHANNEL_ID).then(result => {
-              console.log(result)
-            }).catch(err => {
-              console.error(err)
-            })
-          }} />
-        </form>
+        <Box display="flex" flexDirection="row" justifyContent="space-around">
+          <Box className="section">
+            <h1>Message composer</h1>
+            <MessageComposer
+              channels={channels}
+              onSend={onMessageComposed}
+            />
+          </Box>
+          <Box className="section">
+            <h1>Reaction trigger</h1>
+          </Box>
+          <Box className="section"></Box>
+        </Box>
       </main>
-    </div>
+    </Fragment>
   );
 }
 

@@ -1,0 +1,18 @@
+
+@mixin flex-cont {
+  display: -webkit-flex;
+  display: flex;
+}
+
+@mixin grid-container {
+  display: grid;
+  justify-content: space-between;
+}
+
+@mixin grid($flex) {
+  @if $flex {
+      @include flex-cont;
+  } @else {
+      display: block;
+  }
+}
