@@ -3,11 +3,20 @@ import { WebAPICallResult } from "@slack/web-api";
 export interface SlackChannel {
   id: string
   name: string
+  isMember: boolean
 }
 
 export interface SlackMessage {
   channel: string
   text: string
+}
+
+export interface SlackConversation {
+  fromBot: boolean
+  text: string
+  timestamp: string
+  type: string
+  user: string
 }
 
 export interface SlackReaction {

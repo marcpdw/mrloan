@@ -1,18 +1,20 @@
 import React, { Fragment, useEffect, useState } from 'react';
-import { Box } from '@material-ui/core';
+import { AppBar, Box, Toolbar, Typography } from '@material-ui/core';
 
-import logo from './logo.svg'
+import logo from './assets/MR.png'
 import './App.scss'
 
 import { TESTING_CHANNEL_ID } from './constants/slack'
 import { START_OF_WORKDAY } from './constants/cron';
-import { SlackChannel, SlackMessage } from './models/slack';
+import { SlackChannel, SlackMessage, SlackReaction, SlackConversation } from './models/slack';
 import { getChannels } from './api/slack/channel';
 import { getQuoteOfTheDay } from './actions/quotes'
 import { getRandomMorningGreeting } from './constants/greetings'
-import { send } from './api/slack/message'
-import MessageComposer from './components/MessageComposer';
+import { send, react, history } from './api/slack/message'
+import MessageComposer from './components/MessageComposer'
+import ReactionComposer from './components/ReactionComposer'
 import Scheduler from './config/cron';
+import MessageList from './components/MessageList';
 
 const cron = new Scheduler(START_OF_WORKDAY, async function() {
   const dayQuote = await getQuoteOfTheDay()
@@ -23,6 +25,7 @@ const cron = new Scheduler(START_OF_WORKDAY, async function() {
 
 function App() {
   const [channels, setChannels] = useState<SlackChannel[]>([])
+  const [messages, setMessages] = useState<SlackConversation[]>([])
 
   useEffect(() => {
     getChannels().then(channelList => {
@@ -33,11 +36,27 @@ function App() {
   const onMessageComposed = (message: SlackMessage) => {
     send(message.text, message.channel)
   }
+  const onReactionComposed = (reaction: SlackReaction) => {
+    react(reaction)
+  }
+
+  const onSelectChannelReaction = (channelId: string) => {
+    history(channelId).then(messageHistory => {
+      setMessages(messageHistory)
+    })
+  }
 
   return (
     <Fragment>
       <header>
-        {/* <img src={logo} className="App-logo" alt="logo" /> */}
+        <AppBar position="static" style={{ background: '#39393F' }}>
+          <Toolbar>
+            <img src={logo} className="logo" alt="logo" />
+            <Typography variant="h4" color="inherit" className="logo-letters">
+              <span hidden>Mr</span> Loan
+            </Typography>
+          </Toolbar>
+        </AppBar>
       </header>
       <main>
         <Box display="flex" flexDirection="row" justifyContent="space-around">
@@ -50,6 +69,19 @@ function App() {
           </Box>
           <Box className="section">
             <h1>Reaction trigger</h1>
+            <ReactionComposer
+              channels={channels.filter(chan => chan.isMember)}
+              onChannelSelected={onSelectChannelReaction}
+              onSend={onReactionComposed}
+            />
+            {Boolean(messages.length) && (
+              <Fragment>
+                <h2>Message history</h2>
+                <MessageList
+                  messages={messages}
+                />
+              </Fragment>
+            )}
           </Box>
           <Box className="section"></Box>
         </Box>

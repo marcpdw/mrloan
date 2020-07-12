@@ -1,6 +1,23 @@
 @import "./styles/main.scss";
 
+header {
+  min-height: 65px;
+  margin-bottom: 16px;
+}
 
+.logo {
+  height: 64px;
+  position: absolute;
+  top: 8px;
+  left: 24px;
+}
+
+.logo-letters {
+  position: relative;
+  top: 9px;
+  margin-left: 72px !important;
+  font-weight: bold !important;
+}
 
 
 // .App {

@@ -41,8 +41,9 @@ function MessageComposer({
             label="Message"
             multiline
             onChange={handleChangeMessage}
-            rows={4}
+            rows={5}
             variant="outlined"
+            value={msg}
           />
         </Box>
         <Box display="flex" flexDirection="column" justifyContent="space-between">
