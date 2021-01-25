@@ -6,7 +6,7 @@
 .pnp.js
 
 # Config files
-/src/config/slack.ts
+/src/config/keys.ts
 /src/constants/slack.ts
 
 # testing
