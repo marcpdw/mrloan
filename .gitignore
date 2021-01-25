@@ -5,6 +5,10 @@
 /.pnp
 .pnp.js
 
+# Config files
+/src/config/slack.ts
+/src/constants/slack.ts
+
 # testing
 /coverage
 
