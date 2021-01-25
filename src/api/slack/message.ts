@@ -1,7 +1,9 @@
-import Slack from "../../config/slack";
-import { SlackReaction } from "../../models/slack";
+import { WebAPICallResult } from "@slack/web-api"
 
-export function history(channel: string): Promise<any> {
+import Slack from "../../config/slack"
+import { SlackConversation, SlackReaction } from "../../models/slack"
+
+export async function history(channel: string): Promise<SlackConversation[]> {
   return Slack.getHistory(channel)
 }
 
@@ -9,7 +11,7 @@ export function react(reaction: SlackReaction) {
   return Slack.sendReaction(reaction)
 }
 
-export function send(message: string, channel: string) {
+export async function send(message: string, channel: string): Promise<WebAPICallResult> {
   return Slack.sendMessage({
     text: message,
     channel,

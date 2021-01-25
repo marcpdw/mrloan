@@ -6,7 +6,7 @@ const FIXED_QUOTES = [{
   quote: "Where there's a will, there's a way",
 }, {
   author: 'Cassidy Chambers via Joy Joelle Abi-Aad',
-  quote: "Where there once was a fire, ashes remain",
+  quote: 'Where there once was a fire, ashes remain',
 }]
 
 export function getFixedQuote(): Promise<any> {
